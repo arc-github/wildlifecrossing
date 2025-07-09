@@ -47,13 +47,37 @@
 <div id="map-title">Wonderful World of Wildlife Crossings</div>
 <div id="map"></div>
   
-<div id="filter-buttons">
-  <button onclick="renderMarkers()">All</button>
-  <button onclick="renderMarkers('Planned')">Planned</button>
-  <button onclick="renderMarkers('Complete')">Complete</button>
-  <button onclick="renderMarkers('Case Studies')">Case Studies</button>
-    <button onclick="renderMarkers('IIJA Funded')">IIJA Funded</button>
+<div id="filters" style="position: absolute; top: 10px; left: 10px; background: white; z-index: 2; padding: 10px;">
+  <label>Status:</label>
+  <select id="filter-status">
+    <option value="">All</option>
+    <option>Planned Structure</option>
+    <option>Completed Structure</option>
+    <option>Statewide Analysis</option>
+  </select><br>
 
+  <label>Detail:</label>
+  <select id="filter-detail">
+    <option value="">All</option>
+    <option>Case Study</option>
+    <option>Technical Specifications</option>
+  </select><br>
+
+  <label>Funding:</label>
+  <select id="filter-funding">
+    <option value="">All</option>
+    <option>Wildlife Crossings Pilot Program (WCPP)</option>
+    <option>Transportation Alternatives Program</option>
+  </select><br>
+
+  <label>Species:</label>
+  <select id="filter-species">
+    <option value="">All</option>
+    <option>Large Mammals</option>
+    <option>Ungulates</option>
+    <option>Small Mammals</option>
+    <option>Reptiles and Amphibians</option>
+  </select>
 </div>
 
 <div id="map"></div>
@@ -91,6 +115,7 @@
     ]
   };
 
+  
   const allMarkers = [];
 
   function renderMarkers(filterType = null) {
