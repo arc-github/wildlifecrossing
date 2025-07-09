@@ -109,15 +109,8 @@
 </head>
 <body>
 <div id="map"></div>
-<script>
-mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
 
-const map = new mapboxgl.Map({
-  container: 'map',
-  style: 'mapbox://styles/mapbox/light-v10',
-  center: [-79.3832, 43.6532], // Toronto
-  zoom: 10
-});
+
 
 // GeoJSON for points, lines, and polygons
 const data = {
