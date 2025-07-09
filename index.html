@@ -31,3 +31,65 @@
   </script>
 </body>
 </html>
+
+script>
+  mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
+
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [-79.3832, 43.6532],
+    zoom: 9
+  });
+
+  // Sample GeoJSON data
+  const geojson = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        properties: { title: 'Crossing A', type: 'wildlife' },
+        geometry: { type: 'Point', coordinates: [-79.4, 43.7] }
+      },
+      {
+        type: 'Feature',
+        properties: { title: 'Crossing B', type: 'urban' },
+        geometry: { type: 'Point', coordinates: [-79.3, 43.65] }
+      },
+      {
+        type: 'Feature',
+        properties: { title: 'Crossing C', type: 'agriculture' },
+        geometry: { type: 'Point', coordinates: [-79.2, 43.6] }
+      }
+    ]
+  };
+
+  // Store markers by type
+  const allMarkers = [];
+
+  function renderMarkers(filterType = null) {
+    // Clear old markers
+    allMarkers.forEach(m => m.remove());
+    allMarkers.length = 0;
+
+    geojson.features
+      .filter(f => !filterType || f.properties.type === filterType)
+      .forEach(feature => {
+        const el = document.createElement('div');
+        el.className = 'marker';
+
+        const marker = new mapboxgl.Marker(el)
+          .setLngLat(feature.geometry.coordinates)
+          .setPopup(new mapboxgl.Popup().setHTML(`<h4>${feature.properties.title}</h4><p>${feature.properties.type}</p>`))
+          .addTo(map);
+
+        allMarkers.push(marker);
+      });
+  }
+
+  // Render all initially
+  map.on('load', () => {
+    renderMarkers();
+  });
+
+</script>
