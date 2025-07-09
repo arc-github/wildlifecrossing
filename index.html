@@ -9,88 +9,79 @@
   <style>
     body { margin: 0; padding: 0; }
     #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    #filter-buttons {
+      position: absolute;
+      z-index: 1;
+      background: white;
+      padding: 10px;
+    }
     #filter-buttons button {
-  margin: 5px;
-  padding: 6px 12px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  cursor: pointer;
-}
-#filter-buttons button:hover {
-  background-color: #eee;
-}
-    
+      margin: 5px;
+      padding: 6px 12px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      cursor: pointer;
+    }
+    #filter-buttons button:hover {
+      background-color: #eee;
+    }
   </style>
 </head>
 <body>
-  <div id="map">  </div>
 
-      
-  <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoiYXJjc29sdXRpb25zIiwiYSI6ImNsbHBpb2E0NTAydTEzZG9hcmVmdGdvaG4ifQ.caa0jV__lbPqAoJxVAZVlA';
+<div id="filter-buttons">
+  <button onclick="renderMarkers()">All</button>
+  <button onclick="renderMarkers('Overpass')">Overpass</button>
+  <button onclick="renderMarkers('Underpass')">Underpass</button>
+  <button onclick="renderMarkers('State-wide')">State-wide</button>
+</div>
 
-    const map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [-100, 45], // Roughly central North America (mid-USA)
-      zoom: 3 // Zoomed out enough to see all of Canada, US, Mexico
-    });
+<div id="map"></div>
 
-    // arrows
-          map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+<script>
+  mapboxgl.accessToken = 'pk.eyJ1IjoiYXJjc29sdXRpb25zIiwiYSI6ImNsbHBpb2E0NTAydTEzZG9hcmVmdGdvaG4ifQ.caa0jV__lbPqAoJxVAZVlA';
 
-    const marker = new mapboxgl.Marker()
-  .setLngLat([-100, 45]) // change to your desired coordinates
-  .setPopup(
-    new mapboxgl.Popup({ offset: 25 }) // add some padding
-      .setHTML(`
-        <div style="max-width: 250px;">
-          <h3>Wildlife Crossing Example</h3>
-          <p>This location features an overpass used by elk and deer in migration season.</p>
-          <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Wildlife_Overpass_Banff.jpg" alt="Wildlife Overpass" style="width:100%; border-radius: 6px; margin-top: 5px;" />
-        </div>
-      `)
-  )
-  .addTo(map);
-    
-  // Sample GeoJSON data
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [-100, 45],
+    zoom: 3
+  });
+
+  map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+  new mapboxgl.Marker()
+    .setLngLat([-100, 45])
+    .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`
+      <div style="max-width: 250px;">
+        <h3>Wildlife Crossing Example</h3>
+        <p>This location features an overpass used by elk and deer in migration season.</p>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Wildlife_Overpass_Banff.jpg"
+             alt="Wildlife Overpass"
+             style="width:100%; border-radius: 6px; margin-top: 5px;" />
+      </div>`))
+    .addTo(map);
+
   const geojson = {
     type: 'FeatureCollection',
     features: [
-      {
-        type: 'Feature',
-        properties: { title: 'Crossing A', type: 'Overpass' },
-        geometry: { type: 'Point', coordinates: [-79.4, 43.7] }
-      },
-      {
-        type: 'Feature',
-        properties: { title: 'Crossing B', type: 'Underpass' },
-        geometry: { type: 'Point', coordinates: [-79.3, 43.65] }
-      },
-      {
-        type: 'Feature',
-        properties: { title: 'Crossing C', type: 'State-wide' },
-        geometry: { type: 'Point', coordinates: [-79.2, 43.6] }
-      }
+      { type: 'Feature', properties: { title: 'Crossing A', type: 'Overpass' }, geometry: { type: 'Point', coordinates: [-79.4, 43.7] }},
+      { type: 'Feature', properties: { title: 'Crossing B', type: 'Underpass' }, geometry: { type: 'Point', coordinates: [-79.3, 43.65] }},
+      { type: 'Feature', properties: { title: 'Crossing C', type: 'State-wide' }, geometry: { type: 'Point', coordinates: [-79.2, 43.6] }}
     ]
   };
 
-  // Store markers by type
   const allMarkers = [];
 
   function renderMarkers(filterType = null) {
-    // Clear old markers
     allMarkers.forEach(m => m.remove());
     allMarkers.length = 0;
 
     geojson.features
       .filter(f => !filterType || f.properties.type === filterType)
       .forEach(feature => {
-        const el = document.createElement('div');
-        el.className = 'marker';
-
-        const marker = new mapboxgl.Marker(el)
+        const marker = new mapboxgl.Marker()
           .setLngLat(feature.geometry.coordinates)
           .setPopup(new mapboxgl.Popup().setHTML(`<h4>${feature.properties.title}</h4><p>${feature.properties.type}</p>`))
           .addTo(map);
@@ -99,37 +90,10 @@
       });
   }
 
-  // Render all initially
   map.on('load', () => {
     renderMarkers();
   });
-
 </script>
 
-<div id="filter-buttons" style="position: absolute; z-index: 1; background: white; padding: 10px;">
-  <button onclick="renderMarkers()">All</button>
-  <button onclick="renderMarkers('Overpass')">Overpass</button>
-  <button onclick="renderMarkers('Underpass')">Underpass</button>
-  <button onclick="renderMarkers('Statewide')">Statewide</button>
-</div>
-
-
-<head>
-  <meta charset="utf-8">
-  <title>Highlight Points, Lines & Polygons</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
-  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
-  <style>
-    body { margin: 0; padding: 0; }
-    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-  </style>
-</head>
-<body>
-<div id="map"></div
-
-  
-</script>
 </body>
 </html>
-
