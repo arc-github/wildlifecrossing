@@ -40,6 +40,20 @@
     // arrows
           map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
+    const marker = new mapboxgl.Marker()
+  .setLngLat([-100, 45]) // change to your desired coordinates
+  .setPopup(
+    new mapboxgl.Popup({ offset: 25 }) // add some padding
+      .setHTML(`
+        <div style="max-width: 250px;">
+          <h3>Wildlife Crossing Example</h3>
+          <p>This location features an overpass used by elk and deer in migration season.</p>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Wildlife_Overpass_Banff.jpg" alt="Wildlife Overpass" style="width:100%; border-radius: 6px; margin-top: 5px;" />
+        </div>
+      `)
+  )
+  .addTo(map);
+    
   // Sample GeoJSON data
   const geojson = {
     type: 'FeatureCollection',
