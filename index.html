@@ -133,7 +133,41 @@
         allMarkers.push(marker);
       });
   }
+// new render 
+function renderMarkers() {
+  const status = document.getElementById('filter-status').value;
+  const detail = document.getElementById('filter-detail').value;
+  const funding = document.getElementById('filter-funding').value;
+  const species = document.getElementById('filter-species').value;
 
+  // Remove existing markers
+  allMarkers.forEach(m => m.remove());
+  allMarkers.length = 0;
+
+  geojson.features
+    .filter(f => {
+      const matchStatus = !status || f.properties.status === status;
+      const matchDetail = !detail || f.properties.detail === detail;
+      const matchFunding = !funding || f.properties.funding === funding;
+      const matchSpecies = !species || f.properties.species === species;
+      return matchStatus && matchDetail && matchFunding && matchSpecies;
+    })
+    .forEach(feature => {
+      const marker = new mapboxgl.Marker()
+        .setLngLat(feature.geometry.coordinates)
+        .setPopup(new mapboxgl.Popup().setHTML(`
+          <h4>${feature.properties.title}</h4>
+          <p><strong>Status:</strong> ${feature.properties.status}</p>
+          <p><strong>Detail:</strong> ${feature.properties.detail}</p>
+          <p><strong>Funding:</strong> ${feature.properties.funding}</p>
+          <p><strong>Species:</strong> ${feature.properties.species}</p>
+        `))
+        .addTo(map);
+
+      allMarkers.push(marker);
+    });
+}
+  
   map.on('load', () => {
     renderMarkers();
   });
