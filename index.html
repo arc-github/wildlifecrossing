@@ -25,11 +25,12 @@
   </style>
 </head>
 <body>
-  <div id="map"></div>
-
-    <div id="zoom-controls">
+  <div id="map">
+  <div id="zoom-controls">
   <button onclick="map.zoomIn()">+</button>
   <button onclick="map.zoomOut()">−</button>
+  </div>
+
       
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiYXJjc29sdXRpb25zIiwiYSI6ImNsbHBpb2E0NTAydTEzZG9hcmVmdGdvaG4ifQ.caa0jV__lbPqAoJxVAZVlA';
@@ -218,7 +219,6 @@ map.on('load', () => {
   });
 });
 
-</div>
   
 </script>
 </body>
