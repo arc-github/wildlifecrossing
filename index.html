@@ -32,30 +32,10 @@
     const map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v11',
-  center: [-100, 45], // Roughly central North America (mid-USA)
-zoom: 2.5 // Zoomed out enough to see all of Canada, US, Mexico
+      center: [-100, 45], // Roughly central North America (mid-USA)
+      zoom: 2.5 // Zoomed out enough to see all of Canada, US, Mexico
     });
     
-    
-    // Example marker
-    new mapboxgl.Marker()
-      .setLngLat([-79.3832, 43.6532])
-      .setPopup(new mapboxgl.Popup().setHTML("<h3>Hello Toronto</h3><p>This is a marker.</p>"))
-      .addTo(map);
-  </script>
-</body>
-</html>
-
-<script>
-  mapboxgl.accessToken = 'pk.eyJ1IjoiYXJjc29sdXRpb25zIiwiYSI6ImNsbHBpb2E0NTAydTEzZG9hcmVmdGdvaG4ifQ.caa0jV__lbPqAoJxVAZVlA';
-
-  const map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v11',
-    center: [-79.3832, 43.6532],
-    zoom: 9
-  });
-
   // Sample GeoJSON data
   const geojson = {
     type: 'FeatureCollection',
