@@ -9,6 +9,19 @@
   <style>
     body { margin: 0; padding: 0; }
     #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
+    #filter-buttons button {
+  margin: 5px;
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+}
+#filter-buttons button:hover {
+  background-color: #eee;
+}
+    
   </style>
 </head>
 <body>
@@ -100,3 +113,5 @@
   <button onclick="renderMarkers('urban')">Urban</button>
   <button onclick="renderMarkers('agriculture')">Agriculture</button>
 </div>
+
+
