@@ -190,9 +190,9 @@
         .setLngLat(feature.geometry.coordinates)
         .setPopup(new mapboxgl.Popup().setHTML(`
           <h4><a href='${feature.properties.url}' target='_blank'>${feature.properties.title}</a></h4>
-          <p><strong>Status:</strong> ${feature.properties.status}</p>
-          <p><strong>Species:</strong> ${feature.properties.species}</p>
-          <p><strong>Location:</strong> ${feature.properties.region}</p>
+          <li><strong>Status:</strong> ${feature.properties.status}</li>
+          <li><strong>Species:</strong> ${feature.properties.species}</li>
+          <li><strong>Location:</strong> ${feature.properties.region}</li>
 
 
         `))
