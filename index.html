@@ -57,10 +57,14 @@
       border-radius: 4px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }
+    #map-title a {
+      text-decoration: none;
+      color: inherit;
+    }
   </style>
 </head>
 <body>
-<div id="map-title">Wonderful World of Wildlife Crossings</div>
+<div id="map-title"><a href="about.html" target="_blank">Wonderful World of Wildlife Crossings</a></div>
 <div id="map"></div>
 
 <div id="filters">
@@ -128,8 +132,8 @@
   const geojson = {
     type: 'FeatureCollection',
     features: [
-      { type: 'Feature', properties: { title: 'Crossing A', type: 'Overpass', status: 'Completed Structure', detail: 'Case Study', funding: 'Wildlife Crossings Pilot Program (WCPP)', species: 'Large Mammals', region: 'California' }, geometry: { type: 'Point', coordinates: [-119.5, 34.2] }},
-      { type: 'Feature', properties: { title: 'Crossing B', type: 'Underpass', status: 'Planned Structure', detail: 'Technical Specifications', funding: 'Transportation Alternatives Program', species: 'Ungulates', region: 'Alberta' }, geometry: { type: 'Point', coordinates: [-114, 51] }}
+      { type: 'Feature', properties: { title: 'Crossing A', url: 'project-a.html', type: 'Overpass', status: 'Completed Structure', detail: 'Case Study', funding: 'Wildlife Crossings Pilot Program (WCPP)', species: 'Large Mammals', region: 'California' }, geometry: { type: 'Point', coordinates: [-119.5, 34.2] }},
+      { type: 'Feature', properties: { title: 'Crossing B', url: 'project-b.html', type: 'Underpass', status: 'Planned Structure', detail: 'Technical Specifications', funding: 'Transportation Alternatives Program', species: 'Ungulates', region: 'Alberta' }, geometry: { type: 'Point', coordinates: [-114, 51] }}
     ]
   };
 
@@ -151,12 +155,12 @@
       const ul = document.createElement('ul');
       grouped[region].forEach((f, idx) => {
         const li = document.createElement('li');
-        li.textContent = f.properties.title;
+        li.innerHTML = `<a href="${f.properties.url}" target="_blank">${f.properties.title}</a>`;
         li.addEventListener('click', () => {
           map.flyTo({ center: f.geometry.coordinates, zoom: 8 });
           new mapboxgl.Popup()
             .setLngLat(f.geometry.coordinates)
-            .setHTML(`<h4>${f.properties.title}</h4>`)  
+            .setHTML(`<h4><a href='${f.properties.url}' target='_blank'>${f.properties.title}</a></h4>`)  
             .addTo(map);
         });
         ul.appendChild(li);
@@ -185,7 +189,7 @@
       const marker = new mapboxgl.Marker()
         .setLngLat(feature.geometry.coordinates)
         .setPopup(new mapboxgl.Popup().setHTML(`
-          <h4>${feature.properties.title}</h4>
+          <h4><a href='${feature.properties.url}' target='_blank'>${feature.properties.title}</a></h4>
           <p><strong>Status:</strong> ${feature.properties.status}</p>
         `))
         .addTo(map);
