@@ -26,21 +26,20 @@
     #filter-buttons button:hover {
       background-color: #eee;
     }
-
     #map-title {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 8px 16px;
-  font-family: sans-serif;
-  font-size: 20px;
-  font-weight: bold;
-  border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.3);}
-      
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 8px 16px;
+      font-family: sans-serif;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
   </style>
 </head>
 <body>
@@ -54,7 +53,6 @@
     <option>Planned Structure</option>
     <option>Completed Structure</option>
     <option>Statewide Analysis</option>
-    
   </select><br>
 
   <label>Detail:</label>
@@ -78,82 +76,20 @@
     <option>Ungulates</option>
     <option>Small Mammals</option>
     <option>Reptiles and Amphibians</option>
-   </select><br>
+  </select><br>
 
-    <label>State/Province:</label>
-<select id="filter-region">
-  <option value="">All</option>
-  <!-- United States -->
-  <option>Alabama</option>
-  <option>Alaska</option>
-  <option>Arizona</option>
-  <option>Arkansas</option>
-  <option>California</option>
-  <option>Colorado</option>
-  <option>Connecticut</option>
-  <option>Delaware</option>
-  <option>Florida</option>
-  <option>Georgia</option>
-  <option>Hawaii</option>
-  <option>Idaho</option>
-  <option>Illinois</option>
-  <option>Indiana</option>
-  <option>Iowa</option>
-  <option>Kansas</option>
-  <option>Kentucky</option>
-  <option>Louisiana</option>
-  <option>Maine</option>
-  <option>Maryland</option>
-  <option>Massachusetts</option>
-  <option>Michigan</option>
-  <option>Minnesota</option>
-  <option>Mississippi</option>
-  <option>Missouri</option>
-  <option>Montana</option>
-  <option>Nebraska</option>
-  <option>Nevada</option>
-  <option>New Hampshire</option>
-  <option>New Jersey</option>
-  <option>New Mexico</option>
-  <option>New York</option>
-  <option>North Carolina</option>
-  <option>North Dakota</option>
-  <option>Ohio</option>
-  <option>Oklahoma</option>
-  <option>Oregon</option>
-  <option>Pennsylvania</option>
-  <option>Rhode Island</option>
-  <option>South Carolina</option>
-  <option>South Dakota</option>
-  <option>Tennessee</option>
-  <option>Texas</option>
-  <option>Utah</option>
-  <option>Vermont</option>
-  <option>Virginia</option>
-  <option>Washington</option>
-  <option>West Virginia</option>
-  <option>Wisconsin</option>
-  <option>Wyoming</option>
+  <label>State/Province:</label>
+  <select id="filter-region">
+    <option value="">All</option>
+    <option>California</option>
+    <option>Ontario</option>
+    <option>Alberta</option>
+    <option>British Columbia</option>
+    <option>Texas</option>
+    <option>New York</option>
+  </select><br>
 
-  <!-- Canada -->
-  <option>Alberta</option>
-  <option>British Columbia</option>
-  <option>Manitoba</option>
-  <option>New Brunswick</option>
-  <option>Newfoundland and Labrador</option>
-  <option>Nova Scotia</option>
-  <option>Ontario</option>
-  <option>Prince Edward Island</option>
-  <option>Quebec</option>
-  <option>Saskatchewan</option>
-  <option>Northwest Territories</option>
-  <option>Nunavut</option>
-  <option>Yukon</option>
-  
-</select><br>
-    <button id="reset-filters" style="margin-top: 10px;">Reset Filters</button>
-
-  
+  <button id="reset-filters" style="margin-top: 10px;">Reset Filters</button>
 </div>
 
 <script>
@@ -168,102 +104,71 @@
 
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-  new mapboxgl.Marker()
-    .setLngLat([-100, 45])
-    .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`
-      <div style="max-width: 250px;">
-        <h3>Wildlife Crossing Example</h3>
-        <p>This location features an overpass used by elk and deer in migration season.</p>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Wildlife_Overpass_Banff.jpg"
-             alt="Wildlife Overpass"
-             style="width:100%; border-radius: 6px; margin-top: 5px;" />
-      </div>`))
-    .addTo(map);
-
   const geojson = {
     type: 'FeatureCollection',
     features: [
-      { type: 'Feature', properties: { title: 'Crossing A', type: 'Overpass' }, geometry: { type: 'Point', coordinates: [-79.4, 43.7] }},
-      { type: 'Feature', properties: { title: 'Crossing B', type: 'Underpass' }, geometry: { type: 'Point', coordinates: [-79.3, 43.65] }},
-      { type: 'Feature', properties: { title: 'Crossing C', type: 'State-wide' }, geometry: { type: 'Point', coordinates: [-79.2, 43.6] }}
+      { type: 'Feature', properties: { title: 'Crossing A', type: 'Overpass', status: 'Completed Structure', detail: 'Case Study', funding: 'Wildlife Crossings Pilot Program (WCPP)', species: 'Large Mammals', region: 'California' }, geometry: { type: 'Point', coordinates: [-119.5, 34.2] }},
+      { type: 'Feature', properties: { title: 'Crossing B', type: 'Underpass', status: 'Planned Structure', detail: 'Technical Specifications', funding: 'Transportation Alternatives Program', species: 'Ungulates', region: 'Alberta' }, geometry: { type: 'Point', coordinates: [-114, 51] }}
     ]
   };
 
-  
   const allMarkers = [];
+
+  function renderMarkers() {
+    const status = document.getElementById('filter-status').value;
+    const detail = document.getElementById('filter-detail').value;
+    const funding = document.getElementById('filter-funding').value;
+    const species = document.getElementById('filter-species').value;
+    const region = document.getElementById('filter-region').value;
+
     allMarkers.forEach(m => m.remove());
     allMarkers.length = 0;
 
     geojson.features
-      .filter(f => !filterType || f.properties.type === filterType)
+      .filter(f => {
+        const matchStatus = !status || f.properties.status === status;
+        const matchDetail = !detail || f.properties.detail === detail;
+        const matchFunding = !funding || f.properties.funding === funding;
+        const matchSpecies = !species || f.properties.species === species;
+        const matchRegion = !region || f.properties.region === region;
+        return matchStatus && matchDetail && matchFunding && matchSpecies && matchRegion;
+      })
       .forEach(feature => {
         const marker = new mapboxgl.Marker()
           .setLngLat(feature.geometry.coordinates)
-          .setPopup(new mapboxgl.Popup().setHTML(`<h4>${feature.properties.title}</h4><p>${feature.properties.type}</p>`))
+          .setPopup(new mapboxgl.Popup().setHTML(`
+            <h4>${feature.properties.title}</h4>
+            <p><strong>Status:</strong> ${feature.properties.status}</p>
+            <p><strong>Detail:</strong> ${feature.properties.detail}</p>
+            <p><strong>Funding:</strong> ${feature.properties.funding}</p>
+            <p><strong>Species:</strong> ${feature.properties.species}</p>
+            <p><strong>Region:</strong> ${feature.properties.region}</p>
+          `))
           .addTo(map);
 
         allMarkers.push(marker);
       });
   }
-// new render 
-function renderMarkers() {
-  const status = document.getElementById('filter-status').value;
-  const detail = document.getElementById('filter-detail').value;
-  const funding = document.getElementById('filter-funding').value;
-  const species = document.getElementById('filter-species').value;
 
-  // Remove existing markers
-  allMarkers.forEach(m => m.remove());
-  allMarkers.length = 0;
-
-  geojson.features
-    .filter(f => {
-      const matchStatus = !status || f.properties.status === status;
-      const matchDetail = !detail || f.properties.detail === detail;
-      const matchFunding = !funding || f.properties.funding === funding;
-      const matchSpecies = !species || f.properties.species === species;
-      return matchStatus && matchDetail && matchFunding && matchSpecies;
-    })
-    .forEach(feature => {
-      const marker = new mapboxgl.Marker()
-        .setLngLat(feature.geometry.coordinates)
-        .setPopup(new mapboxgl.Popup().setHTML(`
-          <h4>${feature.properties.title}</h4>
-          <p><strong>Status:</strong> ${feature.properties.status}</p>
-          <p><strong>Detail:</strong> ${feature.properties.detail}</p>
-          <p><strong>Funding:</strong> ${feature.properties.funding}</p>
-          <p><strong>Species:</strong> ${feature.properties.species}</p>
-        `))
-        .addTo(map);
-
-      allMarkers.push(marker);
-    });
-}
-  
   map.on('load', () => {
     renderMarkers();
-    ['filter-status', 'filter-detail', 'filter-funding', 'filter-species'].forEach(id => {
-  document.getElementById(id).addEventListener('change', renderMarkers);
-});
+    ['filter-status', 'filter-detail', 'filter-funding', 'filter-species', 'filter-region'].forEach(id => {
+      document.getElementById(id).addEventListener('change', renderMarkers);
+    });
   });
-
 
   document.getElementById('reset-filters').addEventListener('click', () => {
-  // Reset all dropdowns
-  ['filter-status', 'filter-detail', 'filter-funding', 'filter-species', 'filter-region'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
+    ['filter-status', 'filter-detail', 'filter-funding', 'filter-species', 'filter-region'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
 
-  // Reset the map view to original center and zoom
-  map.flyTo({
-    center: [-100, 45],
-    zoom: 3
-  });
+    map.flyTo({
+      center: [-100, 45],
+      zoom: 3
+    });
 
-  // Re-render markers
-  renderMarkers();
-});
-  
+    renderMarkers();
+  });
 </script>
 
 </body>
