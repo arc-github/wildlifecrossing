@@ -249,6 +249,23 @@ function renderMarkers() {
   document.getElementById(id).addEventListener('change', renderMarkers);
 });
   });
+
+
+  document.getElementById('reset-filters').addEventListener('click', () => {
+  // Reset all dropdowns
+  ['filter-status', 'filter-detail', 'filter-funding', 'filter-species', 'filter-region'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+
+  // Reset the map view to original center and zoom
+  map.flyTo({
+    center: [-100, 45],
+    zoom: 3
+  });
+
+  // Re-render markers
+  renderMarkers();
+});
   
 </script>
 
