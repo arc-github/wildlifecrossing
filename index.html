@@ -9,29 +9,46 @@
   <style>
     body { margin: 0; padding: 0; }
     #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-    #filter-buttons {
+    #filters {
       position: absolute;
-      z-index: 1;
+      top: 10px;
+      left: 10px;
+      z-index: 2;
       background: white;
       padding: 10px;
+      font-family: sans-serif;
+      max-height: 90vh;
+      overflow-y: auto;
     }
-    #filter-buttons button {
-      margin: 5px;
-      padding: 6px 12px;
+    #sidebar {
+      position: absolute;
+      top: 200px;
+      right: 10px;
+      bottom: 10px;
+      width: 250px;
+      background: white;
+      padding: 10px;
+      border-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      overflow-y: auto;
+      z-index: 2;
+      font-family: sans-serif;
       font-size: 14px;
-      border: 1px solid #ccc;
-      background-color: #fff;
-      cursor: pointer;
     }
-    #filter-buttons button:hover {
-      background-color: #eee;
+    #sidebar h4 {
+      margin: 8px 0 4px;
+      font-size: 16px;
+      font-weight: bold;
     }
+    #sidebar ul { list-style: none; padding: 0; margin: 0 0 10px; }
+    #sidebar li { cursor: pointer; padding: 4px; border-bottom: 1px solid #eee; }
+    #sidebar li:hover { background: #f0f0f0; }
     #map-title {
       position: absolute;
       top: 10px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 2;
+      z-index: 3;
       background: rgba(255, 255, 255, 0.9);
       padding: 8px 16px;
       font-family: sans-serif;
@@ -46,7 +63,7 @@
 <div id="map-title">Wonderful World of Wildlife Crossings</div>
 <div id="map"></div>
 
-<div id="filters" style="position: absolute; top: 10px; left: 10px; background: white; z-index: 2; padding: 10px;">
+<div id="filters">
   <label>Status:</label>
   <select id="filter-status">
     <option value="">All</option>
@@ -81,74 +98,15 @@
   <label>State/Province:</label>
   <select id="filter-region">
     <option value="">All</option>
-    <!-- full list of US States and Canadian Provinces -->
-    <option>Alabama</option>
-    <option>Alaska</option>
-    <option>Arizona</option>
-    <option>Arkansas</option>
     <option>California</option>
-    <option>Colorado</option>
-    <option>Connecticut</option>
-    <option>Delaware</option>
-    <option>Florida</option>
-    <option>Georgia</option>
-    <option>Hawaii</option>
-    <option>Idaho</option>
-    <option>Illinois</option>
-    <option>Indiana</option>
-    <option>Iowa</option>
-    <option>Kansas</option>
-    <option>Kentucky</option>
-    <option>Louisiana</option>
-    <option>Maine</option>
-    <option>Maryland</option>
-    <option>Massachusetts</option>
-    <option>Michigan</option>
-    <option>Minnesota</option>
-    <option>Mississippi</option>
-    <option>Missouri</option>
-    <option>Montana</option>
-    <option>Nebraska</option>
-    <option>Nevada</option>
-    <option>New Hampshire</option>
-    <option>New Jersey</option>
-    <option>New Mexico</option>
-    <option>New York</option>
-    <option>North Carolina</option>
-    <option>North Dakota</option>
-    <option>Ohio</option>
-    <option>Oklahoma</option>
-    <option>Oregon</option>
-    <option>Pennsylvania</option>
-    <option>Rhode Island</option>
-    <option>South Carolina</option>
-    <option>South Dakota</option>
-    <option>Tennessee</option>
-    <option>Texas</option>
-    <option>Utah</option>
-    <option>Vermont</option>
-    <option>Virginia</option>
-    <option>Washington</option>
-    <option>West Virginia</option>
-    <option>Wisconsin</option>
-    <option>Wyoming</option>
     <option>Alberta</option>
-    <option>British Columbia</option>
-    <option>Manitoba</option>
-    <option>New Brunswick</option>
-    <option>Newfoundland and Labrador</option>
-    <option>Nova Scotia</option>
     <option>Ontario</option>
-    <option>Prince Edward Island</option>
-    <option>Quebec</option>
-    <option>Saskatchewan</option>
-    <option>Northwest Territories</option>
-    <option>Nunavut</option>
-    <option>Yukon</option>
   </select><br>
 
-  <button id="reset-filters" style="margin-top: 10px;">Reset Filters</button>
+  <button id="reset-filters" style="margin-top: 10px; font-family: sans-serif;">Reset Filters</button>
 </div>
+
+<div id="sidebar"></div>
 
 <script>
   mapboxgl.accessToken = 'pk.eyJ1IjoiYXJjc29sdXRpb25zIiwiYSI6ImNsbHBpb2E0NTAydTEzZG9hcmVmdGdvaG4ifQ.caa0jV__lbPqAoJxVAZVlA';
@@ -159,14 +117,12 @@
     center: [-100, 45],
     zoom: 3
   });
-
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
   const regionBounds = {
     'California': [[-124.48, 32.53], [-114.13, 42.01]],
     'Alberta': [[-120, 48.99], [-110, 60]],
     'Ontario': [[-95.16, 41.67], [-74.34, 56.85]]
-    // Add more as needed
   };
 
   const geojson = {
@@ -179,6 +135,36 @@
 
   const allMarkers = [];
 
+  function updateSidebar(features) {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.innerHTML = '';
+    const grouped = {};
+    features.forEach(f => {
+      const region = f.properties.region || 'Unknown';
+      if (!grouped[region]) grouped[region] = [];
+      grouped[region].push(f);
+    });
+    Object.keys(grouped).sort().forEach(region => {
+      const h4 = document.createElement('h4');
+      h4.textContent = region;
+      sidebar.appendChild(h4);
+      const ul = document.createElement('ul');
+      grouped[region].forEach((f, idx) => {
+        const li = document.createElement('li');
+        li.textContent = f.properties.title;
+        li.addEventListener('click', () => {
+          map.flyTo({ center: f.geometry.coordinates, zoom: 8 });
+          new mapboxgl.Popup()
+            .setLngLat(f.geometry.coordinates)
+            .setHTML(`<h4>${f.properties.title}</h4>`)  
+            .addTo(map);
+        });
+        ul.appendChild(li);
+      });
+      sidebar.appendChild(ul);
+    });
+  }
+
   function renderMarkers() {
     const status = document.getElementById('filter-status').value;
     const detail = document.getElementById('filter-detail').value;
@@ -186,60 +172,41 @@
     const species = document.getElementById('filter-species').value;
     const region = document.getElementById('filter-region').value;
 
-    allMarkers.forEach(m => m.remove());
-    allMarkers.length = 0;
-
-    geojson.features
-      .filter(f => {
-        const matchStatus = !status || f.properties.status === status;
-        const matchDetail = !detail || f.properties.detail === detail;
-        const matchFunding = !funding || f.properties.funding === funding;
-        const matchSpecies = !species || f.properties.species === species;
-        const matchRegion = !region || f.properties.region === region;
-        return matchStatus && matchDetail && matchFunding && matchSpecies && matchRegion;
-      })
-      .forEach(feature => {
-        const marker = new mapboxgl.Marker()
-          .setLngLat(feature.geometry.coordinates)
-          .setPopup(new mapboxgl.Popup().setHTML(`
-            <h4>${feature.properties.title}</h4>
-            <p><strong>Status:</strong> ${feature.properties.status}</p>
-            <p><strong>Detail:</strong> ${feature.properties.detail}</p>
-            <p><strong>Funding:</strong> ${feature.properties.funding}</p>
-            <p><strong>Species:</strong> ${feature.properties.species}</p>
-            <p><strong>Region:</strong> ${feature.properties.region}</p>
-          `))
-          .addTo(map);
-
-        allMarkers.push(marker);
-      });
-
-    // Fly to region if it's in the bounds lookup
+    allMarkers.forEach(m => m.remove()); allMarkers.length = 0;
+    const filtered = geojson.features.filter(f => {
+      const matchStatus = !status || f.properties.status === status;
+      const matchDetail = !detail || f.properties.detail === detail;
+      const matchFunding = !funding || f.properties.funding === funding;
+      const matchSpecies = !species || f.properties.species === species;
+      const matchRegion = !region || f.properties.region === region;
+      return matchStatus && matchDetail && matchFunding && matchSpecies && matchRegion;
+    });
+    filtered.forEach(feature => {
+      const marker = new mapboxgl.Marker()
+        .setLngLat(feature.geometry.coordinates)
+        .setPopup(new mapboxgl.Popup().setHTML(`
+          <h4>${feature.properties.title}</h4>
+          <p><strong>Status:</strong> ${feature.properties.status}</p>
+        `))
+        .addTo(map);
+      allMarkers.push(marker);
+    });
     if (region && regionBounds[region]) {
       map.fitBounds(regionBounds[region], { padding: 40 });
     }
+    updateSidebar(filtered);
   }
 
   map.on('load', () => {
     renderMarkers();
-    ['filter-status', 'filter-detail', 'filter-funding', 'filter-species', 'filter-region'].forEach(id => {
+    ['filter-status','filter-detail','filter-funding','filter-species','filter-region'].forEach(id => {
       document.getElementById(id).addEventListener('change', renderMarkers);
     });
-  });
-
-  document.getElementById('reset-filters').addEventListener('click', () => {
-    ['filter-status', 'filter-detail', 'filter-funding', 'filter-species', 'filter-region'].forEach(id => {
-      document.getElementById(id).value = '';
+    document.getElementById('reset-filters').addEventListener('click', () => {
+      ['filter-status','filter-detail','filter-funding','filter-species','filter-region'].forEach(id => document.getElementById(id).value='');
+      map.flyTo({ center:[-100,45], zoom:3 }); renderMarkers();
     });
-
-    map.flyTo({
-      center: [-100, 45],
-      zoom: 3
-    });
-
-    renderMarkers();
   });
 </script>
-
 </body>
 </html>
