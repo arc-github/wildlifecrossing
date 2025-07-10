@@ -150,10 +150,9 @@
   <option>Nunavut</option>
   <option>Yukon</option>
   
-  <button id="reset-filters" style="margin-top: 10px;">Reset Filters</button>
-
 </select><br>
-  
+    <button id="reset-filters" style="margin-top: 10px;">Reset Filters</button>
+
   
 </div>
 
@@ -192,8 +191,6 @@
 
   
   const allMarkers = [];
-
-  function renderMarkers(filterType = null) {
     allMarkers.forEach(m => m.remove());
     allMarkers.length = 0;
 
