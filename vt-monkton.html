@@ -40,6 +40,36 @@
     a:hover {
       text-decoration: underline;
     }
+
+    .carousel {
+  position: relative;
+  text-align: center;
+}
+
+.carousel img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.carousel-buttons {
+  margin-top: 10px;
+}
+
+.carousel-buttons button {
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.carousel-buttons button:hover {
+  background-color: #004c99;
+}
+    
   </style>
 </head>
 <body>
@@ -73,6 +103,15 @@
     Getting these animals off the roadway makes the Monkton-Vergennes Road safer for people, too. If you’d like to help figure out where else crossings are needed in Vermont, please report probable or known collision areas to the <a href="https://vtherpatlas.org/">Vermont Reptile and Amphibian Atlas</a> by submitting a <a href="https://vtherpatlas.org/submit-record/">report</a> or sending them an <a href="mailto:klemens@vtherpatlas.org">email</a>.
   </p>
 
+  <h2>Photo Gallery</h2>
+<div class="carousel">
+  <img id="carousel-image" src="photo1.jpg" alt="Wildlife Crossing">
+  <div class="carousel-buttons">
+    <button onclick="prevImage()">❮ Prev</button>
+    <button onclick="nextImage()">Next ❯</button>
+  </div>
+</div>
+  
   <h2>Learn More</h2>
   <ul>
     <li>Additional storymap: <a href="https://storymaps.arcgis.com/stories/fff7446bf2254305ae16ef0b585bf891" target="_blank">Monkton Wildlife Crossing</a></li>
@@ -85,5 +124,29 @@
   <p>
     <a href="index.html">&larr; Back to Map</a>
   </p>
+
+  <script>
+  const images = ["photo1.jpg", "photo2.jpg", "photo3.jpg"]; // Replace with your actual image file names
+  let currentIndex = 0;
+
+  function showImage(index) {
+    const img = document.getElementById("carousel-image");
+    img.src = images[index];
+  }
+
+  function prevImage() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    showImage(currentIndex);
+  }
+
+  function nextImage() {
+    currentIndex = (currentIndex + 1) % images.length;
+    showImage(currentIndex);
+  }
+
+  // Show the first image initially
+  showImage(currentIndex);
+</script>
+  
 </body>
 </html>
