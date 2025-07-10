@@ -188,9 +188,16 @@
     filtered.forEach(feature => {
       const marker = new mapboxgl.Marker()
         .setLngLat(feature.geometry.coordinates)
-        .setPopup(new mapboxgl.Popup().setHTML(`
-          <h4><a href='${feature.properties.url}' target='_blank'>${feature.properties.title}</a></h4>
-          <p><strong>Status:</strong> ${feature.properties.status}</p>
+          .setPopup(new mapboxgl.Popup().setHTML(`
+  <h4><a href='${feature.properties.url}' target='_blank'>${feature.properties.title}</a></h4>
+  <p><strong>Status:</strong> ${feature.properties.status}</p>
+  <p><strong>Detail:</strong> ${feature.properties.detail}</p>
+  <p><strong>Funding:</strong> ${feature.properties.funding}</p>
+  <p><strong>Species:</strong> ${feature.properties.species}</p>
+  <p><strong>Region:</strong> ${feature.properties.region}</p>
+`))
+
+          
         `))
         .addTo(map);
       allMarkers.push(marker);
