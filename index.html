@@ -251,11 +251,28 @@
     'Yukon': [[-141.00, 59.99], [-123.80, 69.65]]
   };
 
-  const geojson = {
-    type: 'FeatureCollection',
-    features: [
-      { type: 'Feature', properties: { title: 'Monkton Wildlife Crossing', url: 'vt-monkton.html', type: 'Underpass', status: 'Completed Structure', detail: 'Case Study, Technical Specifications', funding: 'Transportation Alternatives Program', species: 'Reptiles and Amphibians', region: 'Vermont' }, geometry: { type: 'Point', coordinates: [-73.131475, 44.246778] }},
-  };
+ const geojson = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      properties: {
+        title: 'Monkton Wildlife Crossing',
+        url: 'vt-monkton.html',
+        type: 'Underpass',
+        status: 'Completed Structure',
+        detail: 'Case Study, Technical Specifications',
+        funding: 'Transportation Alternatives Program',
+        species: 'Reptiles and Amphibians',
+        region: 'Vermont'
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [-73.131475, 44.246778]
+      }
+    }
+  ]
+};
 
   const allMarkers = [];
 
